@@ -23,14 +23,7 @@ sudo apt-get update
 # Step 6: Install components
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose
 
-# Step 7: Ask user if they want to add docker groups to current user
-read -p "Do you want to add your user to the docker group? (y/n): " add_to_docker_group
-if [ "$add_to_docker_group" == "y" ]; then
-  sudo usermod -aG docker $USER
-  echo "User added to the docker group. Please log out and log back in for the changes to take effect."
-fi
-
-# Step 8: Ask user to enable docker on startup
+# Step 7: Ask user to enable docker on startup
 read -p "Do you want to enable Docker on startup? (y/n): " enable_docker_startup
 if [ "$enable_docker_startup" == "y" ]; then
   sudo systemctl enable docker.service
@@ -38,10 +31,18 @@ if [ "$enable_docker_startup" == "y" ]; then
   echo "Docker enabled on startup."
 fi
 
-# Step 9: Verify installation by running hello world
+# Step 8: Verify installation by running hello world
 read -p "Do you want to verify the Docker installation by running hello-world? (y/n): " verify_installation
 if [ "$verify_installation" == "y" ]; then
   sudo docker run hello-world
+fi
+
+# Step 9: Ask user if they want to add docker groups to current user
+read -p "Do you want to add your user to the docker group? (y/n): " add_to_docker_group
+if [ "$add_to_docker_group" == "y" ]; then
+  sudo usermod -aG docker $USER
+  newgrp docker  # Activate the changes without requiring a logout
+  echo "User added to the docker group."
 fi
 
 echo "Docker installation script completed."
